@@ -21,7 +21,7 @@ Segui questi passaggi per far girare la dashboard sul tuo PC.
 Clona il repository o scarica lo ZIP:
 
 
-2. 
+# 2. 
 Setup dell'Ambiente (Solo la prima volta)
 Se il PC non ha i programmi necessari installati, apri PowerShell come Amministratore nella cartella del progetto ed esegui:
 
@@ -29,13 +29,13 @@ Se il PC non ha i programmi necessari installati, apri PowerShell come Amministr
 
 Questo installerà XAMPP, Composer e Git tramite winget. Riavvia la PowerShell dopo questo passaggio.
 
-3. 
+# 3. 
 
 Esegui lo script di configurazione per preparare il database e le chiavi di sistema:
 
 .\installa.ps1
 
-4. 
+# 4. 
 
 Inserisci i tuoi file video (MP4, WEBM o MKV) nella cartella locale:
 public/videos/
