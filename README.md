@@ -20,11 +20,9 @@ Segui questi passaggi per far girare la dashboard sul tuo PC.
 
 Clona il repository o scarica lo ZIP:
 
-
 # 2. 
 Setup dell'Ambiente (Solo la prima volta)
 Se il PC non ha i programmi necessari installati, apri PowerShell come Amministratore nella cartella del progetto ed esegui:
-
 .\setup.ps1
 
 Questo installerà XAMPP, Composer e Git tramite winget. Riavvia la PowerShell dopo questo passaggio.
@@ -32,7 +30,6 @@ Questo installerà XAMPP, Composer e Git tramite winget. Riavvia la PowerShell d
 # 3. 
 
 Esegui lo script di configurazione per preparare il database e le chiavi di sistema:
-
 .\installa.ps1
 
 # 4. 
@@ -41,38 +38,30 @@ Inserisci i tuoi file video (MP4, WEBM o MKV) nella cartella locale:
 public/videos/
 
 Per avviare la dashboard, digita nel terminale:
-
 php artisan serve
-Apri il browser all'indirizzo: http://localhost:8000
 
+Apri il browser all'indirizzo: http://localhost:8000
 Nota: Al primo avvio, clicca su "Consenti" quando il browser richiede l'accesso alla posizione per mostrare il meteo corretto.
 
 
 
-📂 Struttura Tecnica del Progetto
+## 📂 Struttura Tecnica del Progetto
+
 app/Http/Controllers/DashboardController.php: Gestisce la logica backend, il recupero dei dati meteo, il parsing dei feed RSS e la scansione della cartella video.
-
 resources/views/dashboard.blade.php: Contiene l'intera interfaccia utente, gli stili CSS Grid e la logica JavaScript per gli aggiornamenti dinamici.
-
 routes/web.php: Definisce i punti di accesso (endpoint) per la pagina principale e le API interne.
-
 public/videos/: Cartella di archiviazione per i contenuti multimediali.
-
 setup.ps1: Script PowerShell per l'installazione dei software di base (XAMPP, Git, Composer).
-
 installa.ps1: Script PowerShell per la configurazione rapida di Laravel (.env, key, database, link).
 
 
 
-📡 Servizi e API Utilizzate
+## 📡 Servizi e API Utilizzate
+
 Framework: Laravel 11
-
 Dati Meteo: Open-Meteo API
-
 Geocoding: Nominatim OpenStreetMap
-
 Mappa: Windy Embed
-
 Notizie: ANSA RSS Feed
 
 
