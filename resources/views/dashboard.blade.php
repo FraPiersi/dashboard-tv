@@ -13,7 +13,7 @@
             height: 100vh;
             display: grid;
             grid-template-columns: 420px 1fr;
-            grid-template-rows: 1fr 1fr;
+            grid-template-rows: 50px 1fr 44fr;
             gap: 12px;
             padding: 12px;
             overflow: hidden;
@@ -22,7 +22,7 @@
         /* --- Meteo: colonna sinistra intera --- */
         #meteo-box {
             grid-column: 1;
-            grid-row: 1;
+            grid-row: 2 ;
             background: #1a1a2e;
             border-radius: 16px;
             padding: 32px;
@@ -39,7 +39,7 @@
         /* --- Video: in alto a destra --- */
         #player-box {
             grid-column: 2;
-            grid-row: 1 / 3;
+            grid-row: 2 / 4;
             background: #000;
             border-radius: 16px;
             overflow: hidden;
@@ -72,30 +72,39 @@
 
         /* --- Notizie: in basso a destra, scorrimento verticale --- */
         #notizie-box {
-            grid-column: 1;
-            grid-row: 2;
+            grid-column: 1 / 3;
+            grid-row: -1;
             background: #1a1a1a;
-            border-radius: 16px;
-            overflow: hidden;
+            border-radius: 8px;
+            height: 80px;
             display: flex;
-            flex-direction: column;
+            align-items: center;
+            overflow: hidden;
         }
         #notizie-header {
             background: #e24b4a;
-            padding: 8px 16px;
+            padding: 0 14px;
+            height: 100%;
+            display: flex;
+            align-items: center;
             font-size: 12px;
             font-weight: 600;
+            white-space: nowrap;
             flex-shrink: 0;
         }
         #notizie-track {
             flex: 1;
             overflow: hidden;
-            position: relative;
+            height: 100%;
+            display: flex;
+            align-items: center;
         }
         #notizie-inner {
-            position: absolute;
-            width: 100%;
-            animation: scroll-up 40s linear infinite;
+            display: inline-block;
+            white-space: nowrap;
+            font-size: 40px;
+            color: #ccc;
+            animation: scroll-left 300s linear infinite;
         }
         #notizie-inner .notizia {
             padding: 10px 16px;
@@ -108,13 +117,29 @@
             background: #222;
             color: #fff;
         }
-        @keyframes scroll-up {
-            0%   { transform: translateY(0); }
-            100% { transform: translateY(-50%); }
+        @keyframes scroll-left {
+            0%   { transform: translateX(0%); }
+            100% { transform: translateX(-50%); }
         }
     </style>
 </head>
 <body>
+
+    <div style="
+        grid-column: 1 / -1;
+        grid-row: 1;
+        background:rgb(255, 255, 255);
+        border-radius: 12px;
+        padding: 0 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 50px;
+    ">
+        <span style="font-size: 40px; font-weight: 700; color: #f20505; letter-spacing: 2px;">
+            DIREZIONE REGIONALE VIGILI DEL FUOCO MARCHE
+        </span>
+    </div>
     
     <button onclick="toggleFullscreen()" id="btn-fs" style="
     position: fixed;
@@ -157,11 +182,9 @@
 
     {{-- Notizie in basso a destra --}}
     <div id="notizie-box">
-        <div id="notizie-header">● LIVE — Ultime notizie</div>
+        <div id="notizie-header">● LIVE</div>
         <div id="notizie-track">
-            <div id="notizie-inner">
-                <div class="notizia">Caricamento notizie...</div>
-            </div>
+            <div id="notizie-inner">Caricamento notizie...</div>
         </div>
     </div>
 
@@ -235,8 +258,8 @@
 
             // Duplica per loop continuo
             const tutte = [...notizie, ...notizie];
-            const html = tutte.map(n => `<div class="notizia">${n}</div>`).join('');
-            document.getElementById('notizie-inner').innerHTML = html;
+            const testo = notizie.join('   --------  ');
+            document.getElementById('notizie-inner').textContent = testo + '   ●   ' + testo + '   ●   ' + testo + '   ●   ' + testo;
         } catch(e) {
             document.getElementById('notizie-inner').innerHTML = '<div class="notizia">Notizie non disponibili</div>';
         }
