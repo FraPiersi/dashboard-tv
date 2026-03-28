@@ -29,7 +29,7 @@ class DashboardController extends Controller
     public function notizie()
     {
         $notizie = Cache::remember('notizie', 300, function () {
-            $xml = simplexml_load_file('https://www.ansa.it/sito/notizie/topnews/topnews_rss.xml');
+            $xml = simplexml_load_file('https://www.cronacheancona.it/feed/');
             $items = [];
             foreach ($xml->channel->item as $item) {
                 $items[] = (string) $item->title;
