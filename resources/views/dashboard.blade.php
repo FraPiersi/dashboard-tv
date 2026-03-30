@@ -104,7 +104,7 @@
             white-space: nowrap;
             font-size: 40px;
             color: #ccc;
-            animation: scroll-left 300s linear infinite;
+            animation: scroll-left 1000s linear infinite;
         }
         #notizie-inner .notizia {
             padding: 10px 16px;
@@ -258,8 +258,8 @@
 
             // Duplica per loop continuo
             const tutte = [...notizie, ...notizie];
-            const testo = notizie.join('   --------  ');
-            document.getElementById('notizie-inner').textContent = testo + '   ●   ' + testo + '   ●   ' + testo + '   ●   ' + testo;
+            const testo = notizie.join('    ●    ');
+            document.getElementById('notizie-inner').textContent = testo + '    ●    ' + testo + '    ●    ' + testo + '    ●    ' + testo;
         } catch(e) {
             document.getElementById('notizie-inner').innerHTML = '<div class="notizia">Notizie non disponibili</div>';
         }
