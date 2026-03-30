@@ -106,6 +106,12 @@
             0%   { transform: translateX(0%); }
             100% { transform: translateX(-50%); }
         }
+
+        #btn-fs:hover {
+            background: #f0f0f0 !important; /* Diventa grigio chiarissimo */
+            border-color: #bbb !important;
+            color: #000 !important;        /* Forza la scritta a restare nera */
+        }
     </style>
 </head>
 <body>
@@ -127,19 +133,19 @@
     </div>
     
     <button onclick="toggleFullscreen()" id="btn-fs" style="
-    position: fixed;
-    top: 12px;
-    right: 12px;
-    z-index: 999;
-    background: rgba(255,255,255,0.1);
-    border: 1px solid rgba(255,255,255,0.2);
-    color: #fff;
-    padding: 6px 12px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 13px;
-    opacity: 0;
-    transition: opacity 0.3s ease;
+        position: fixed;
+        top: 12px;
+        right: 12px;
+        z-index: 999;
+        background: transparent;
+        border: none;
+        color:rgb(90, 90, 90);
+        padding: 6px 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 13px;
+        opacity: 0;
+        transition: opacity 0.3s ease; 
     ">⛶ Schermo intero</button>
 
     
