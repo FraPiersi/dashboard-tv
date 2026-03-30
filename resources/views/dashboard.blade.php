@@ -174,29 +174,24 @@
     </div>
 
     <script>
-    // METEO geolocalizzato
+    // METEO Roma
     async function caricaMeteo() {
         try {
-            navigator.geolocation.getCurrentPosition(async (pos) => {
-                const lat = pos.coords.latitude;
-                const lon = pos.coords.longitude;
+            // 1. Chiamiamo il TUO controller Laravel (quello che hai modificato prima)
+            const r = await fetch('/api/meteo'); 
+            const d = await r.json();
 
-                const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,windspeed_10m,relativehumidity_2m,surface_pressure&wind_speed_unit=kmh`);
-                const d = await r.json();
-
-                const geo = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`);
-                const geoData = await geo.json();
-                const citta = geoData.address.city || geoData.address.town || geoData.address.village || 'La tua posizione';
-
-                document.getElementById('meteo-citta').textContent = citta;
-                document.getElementById('meteo-temp').textContent = Math.round(d.current.temperature_2m) + '°C';
-                document.getElementById('meteo-vento').textContent = 'Vento: ' + Math.round(d.current.windspeed_10m) + ' km/h';
-                document.getElementById('meteo-umidita').textContent = 'Umidità: ' + d.current.relativehumidity_2m + '%';
-                document.getElementById('meteo-pressione').textContent = 'Pressione: ' + Math.round(d.current.surface_pressure) + ' hPa';
-            }, () => {
-                document.getElementById('meteo-citta').textContent = 'Posizione non disponibile';
-            });
+            // 2. Scriviamo "Roma" a mano perché l'API non ci dà il nome della città
+            document.getElementById('meteo-citta').textContent = 'Ancona';
+            
+            // 3. Inseriamo i dati che arrivano dal Controller
+            document.getElementById('meteo-temp').textContent = Math.round(d.temperature_2m) + '°C';
+            document.getElementById('meteo-vento').textContent = 'Vento: ' + Math.round(d.windspeed_10m) + ' km/h';
+            document.getElementById('meteo-umidita').textContent = 'Umidità: ' + d.relativehumidity_2m + '%';
+            document.getElementById('meteo-pressione').textContent = 'Pressione: ' + Math.round(d.surface_pressure) + ' hPa';
+            
         } catch(e) {
+            console.error('Errore meteo:', e);
             document.getElementById('meteo-citta').textContent = 'Meteo non disponibile';
         }
     }

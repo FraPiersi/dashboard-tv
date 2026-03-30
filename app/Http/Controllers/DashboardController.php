@@ -15,8 +15,8 @@ class DashboardController extends Controller
     {
         $data = Cache::remember('meteo', 600, function () {
             $resp = Http::get('https://api.open-meteo.com/v1/forecast', [
-                'latitude'        => 45.46,
-                'longitude'       => 9.19,
+                'latitude'        => 43.61,
+                'longitude'       => 13.51,
                 'current'         => 'temperature_2m,windspeed_10m,relativehumidity_2m,surface_pressure,weathercode',
                 'wind_speed_unit' => 'kmh',
             ]);
