@@ -48,27 +48,12 @@
         }
         #player-box video {
             width: 100%;
+            height: 100%;
             flex: 1;
             object-fit: cover;
             background: #000;
         }
-        #video-controls {
-            padding: 6px 10px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: #111;
-            font-size: 12px;
-        }
-        #video-controls select {
-            background: #222;
-            color: #eee;
-            border: 1px solid #444;
-            padding: 3px 6px;
-            border-radius: 6px;
-            font-size: 11px;
-            flex: 1;
-        }
+
 
         /* --- Notizie: in basso a destra, scorrimento verticale --- */
         #notizie-box {
@@ -172,12 +157,6 @@
         <video id="video-player" controls autoplay muted>
             Il tuo browser non supporta il video.
         </video>
-        <div id="video-controls">
-            <span style="color:#888">Playlist:</span>
-            <select id="video-select" onchange="cambiaVideo(this.value)">
-                <option value="">Nessun video</option>
-            </select>
-        </div>
     </div>
 
     {{-- Notizie in basso a destra --}}
@@ -224,14 +203,10 @@
         try {
             const r = await fetch('/api/video');
             playlist = await r.json();
-            const sel = document.getElementById('video-select');
-            sel.innerHTML = '';
-            if (playlist.length === 0) {
-                sel.innerHTML = '<option>Nessun video nella cartella</option>';
-                return;
+            
+            if (playlist.length > 0) {
+                cambiaVideo(playlist[0].url);
             }
-            playlist.forEach((v, i) => sel.add(new Option(v.name, v.url)));
-            cambiaVideo(playlist[0].url);
         } catch(e) { console.error('Errore video:', e); }
     }
 
@@ -245,7 +220,6 @@
         indiceCorrente = (indiceCorrente + 1) % playlist.length;
         if (playlist[indiceCorrente]) {
             cambiaVideo(playlist[indiceCorrente].url);
-            document.getElementById('video-select').selectedIndex = indiceCorrente;
         }
     });
 
