@@ -5,167 +5,157 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard TV</title>
     <style>
+        /* Reset Totale */
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
             background: #0f0f0f;
             color: #eee;
             font-family: system-ui, sans-serif;
             height: 100vh;
+            width: 100vw;
             display: grid;
-            grid-template-columns: 420px 1fr;
-            grid-template-rows: 50px 1fr 44fr;
-            gap: 12px;
             padding: 12px;
-            overflow: hidden;
+            gap: 12px;
+            overflow: hidden; /* Impedisce la comparsa di barre di scorrimento */
+
+            /* DEFINIZIONE GRIGLIA */
+            grid-template-columns: 420px 1fr; /* Colonna Meteo e Colonna Video */
+            grid-template-rows: 60px 1fr 80px; /* Altezza fissa sopra e sotto, flessibile al centro */
         }
 
-        /* --- Meteo: colonna sinistra intera --- */
+        /* --- 1. TESTATA (Sempre in alto, occupa tutto) --- */
+        #header-banner {
+            grid-column: 1 / 3; /* Da colonna 1 a 3 (tutta la larghezza) */
+            grid-row: 1;        /* Prima riga */
+            background: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* --- 2. METEO (Sinistra) --- */
         #meteo-box {
-            grid-column: 1;
-            grid-row: 2 ;
+            grid-column: 1;     /* Prima colonna */
+            grid-row: 2;        /* Seconda riga (centro) */
             background: #1a1a2e;
             border-radius: 16px;
-            padding: 32px;
+            padding: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            gap: 12px;
+            justify-content: flex-start;
+            gap: 10px;
+            min-height: 0; /* Importante per non far "esplodere" il box */
         }
         #meteo-box .citta { font-size: 22px; font-weight: 500; color: #fff; }
-        #meteo-box .temp  { font-size: 96px; font-weight: 200; line-height: 1; }
+        #meteo-box .temp  { font-size: 90px; font-weight: 200; line-height: 1; }
         #meteo-box .desc  { font-size: 16px; color: #aaa; }
 
-        /* --- Video: in alto a destra --- */
+        /* --- 3. VIDEO (Destra) --- */
         #player-box {
-            grid-column: 2;
-            grid-row: 2 / 4;
+            grid-column: 2;     /* Seconda colonna */
+            grid-row: 2;        /* Seconda riga (centro) */
             background: #000;
             border-radius: 16px;
             overflow: hidden;
             display: flex;
-            flex-direction: column;
+            min-height: 0;
         }
         #player-box video {
             width: 100%;
             height: 100%;
-            flex: 1;
             object-fit: cover;
-            background: #000;
         }
 
-
-        /* --- Notizie: in basso a destra, scorrimento verticale --- */
+        /* --- 4. NOTIZIE (In fondo, occupa tutto) --- */
         #notizie-box {
-            grid-column: 1 / 3;
-            grid-row: -1;
-            background: #1a1a1a;
+            grid-column: 1 / 3; /* Da colonna 1 a 3 (tutta la larghezza) */
+            grid-row: 3;        /* Terza riga (fondo) */
+            background: #222;   /* Grigio scuro leggermente più chiaro del fondo */
             border-radius: 8px;
-            height: 80px;
             display: flex;
             align-items: center;
             overflow: hidden;
         }
+
         #notizie-header {
             background: #e24b4a;
-            padding: 0 14px;
+            padding: 0 20px;
             height: 100%;
             display: flex;
             align-items: center;
-            font-size: 12px;
-            font-weight: 600;
+            font-size: 14px;
+            font-weight: 700;
             white-space: nowrap;
             flex-shrink: 0;
+            color: white;
         }
         #notizie-track {
             flex: 1;
             overflow: hidden;
-            height: 100%;
             display: flex;
             align-items: center;
         }
         #notizie-inner {
             display: inline-block;
             white-space: nowrap;
-            font-size: 40px;
+            font-size: 36px; /* Dimensione ideale per TV */
             color: #ccc;
             animation: scroll-left 1000s linear infinite;
-        }
-        #notizie-inner .notizia {
-            padding: 10px 16px;
-            font-size: 13px;
-            color: #ccc;
-            border-bottom: 1px solid #2a2a2a;
-            line-height: 1.4;
-        }
-        #notizie-inner .notizia:hover {
-            background: #222;
-            color: #fff;
         }
         @keyframes scroll-left {
             0%   { transform: translateX(0%); }
             100% { transform: translateX(-50%); }
         }
 
-        #btn-fs:hover {
-            background: #f0f0f0 !important; /* Diventa grigio chiarissimo */
-            border-color: #bbb !important;
-            color: #000 !important;        /* Forza la scritta a restare nera */
+        /* Bottone Fullscreen */
+        #btn-fs {
+            position: fixed;
+            top: 12px;
+            right: 12px;
+            z-index: 999;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: #666;
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            opacity: 0;
+            transition: 0.3s;
         }
+        #btn-fs:hover { opacity: 1; background: #eee; color: #000; }
     </style>
 </head>
 <body>
 
-    <div style="
-        grid-column: 1 / -1;
-        grid-row: 1;
-        background:rgb(255, 255, 255);
-        border-radius: 12px;
-        padding: 0 24px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 50px;
-    ">
+    <div id="header-banner">
         <span style="font-size: 40px; font-weight: 700; color: #f20505; letter-spacing: 2px;">
             DIREZIONE REGIONALE VIGILI DEL FUOCO MARCHE
         </span>
     </div>
     
-    <button onclick="toggleFullscreen()" id="btn-fs" style="
-        position: fixed;
-        top: 12px;
-        right: 12px;
-        z-index: 999;
-        background: transparent;
-        border: none;
-        color:rgb(90, 90, 90);
-        padding: 6px 12px;
-        border-radius: 8px;
-        cursor: pointer;
-        font-size: 13px;
-        opacity: 0;
-        transition: opacity 0.3s ease; 
-    ">⛶ Schermo intero</button>
+    <button onclick="toggleFullscreen()" id="btn-fs">⛶ Schermo intero</button>
 
-    
-    {{-- Meteo sinistra --}}
     <div id="meteo-box">
-        <div class="citta" id="meteo-citta">Caricamento...</div>
+        <div class="citta" id="meteo-citta">Ancona</div>
         <div class="temp" id="meteo-temp">--°</div>
         <div class="desc" id="meteo-vento">Vento: --</div>
         <div class="desc" id="meteo-umidita">Umidità: --</div>
         <div class="desc" id="meteo-pressione">Pressione: --</div>
+        
+        <div style="width: 100%; flex: 1; margin-top: 15px; border-radius: 12px; overflow: hidden; border: 1px solid #333;">
+            <iframe width="100%" height="100%" src="https://embed.windy.com/embed2.html?lat=43.61&lon=13.51&zoom=7&level=surface&overlay=clouds&product=ecmwf&metricWind=km%2Fh&metricTemp=%C2%B0C" frameborder="0"></iframe>
+        </div>
     </div>
 
-    {{-- Player video in alto a destra --}}
     <div id="player-box">
         <video id="video-player" controls autoplay muted>
             Il tuo browser non supporta il video.
         </video>
     </div>
 
-    {{-- Notizie in basso a destra --}}
     <div id="notizie-box">
         <div id="notizie-header">● LIVE</div>
         <div id="notizie-track">
@@ -174,100 +164,68 @@
     </div>
 
     <script>
-    // METEO Roma
-    async function caricaMeteo() {
-        try {
-            // 1. Chiamiamo il TUO controller Laravel (quello che hai modificato prima)
-            const r = await fetch('/api/meteo'); 
-            const d = await r.json();
-
-            // 2. Scriviamo "Roma" a mano perché l'API non ci dà il nome della città
-            document.getElementById('meteo-citta').textContent = 'Ancona';
-            
-            // 3. Inseriamo i dati che arrivano dal Controller
-            document.getElementById('meteo-temp').textContent = Math.round(d.temperature_2m) + '°C';
-            document.getElementById('meteo-vento').textContent = 'Vento: ' + Math.round(d.windspeed_10m) + ' km/h';
-            document.getElementById('meteo-umidita').textContent = 'Umidità: ' + d.relativehumidity_2m + '%';
-            document.getElementById('meteo-pressione').textContent = 'Pressione: ' + Math.round(d.surface_pressure) + ' hPa';
-            
-        } catch(e) {
-            console.error('Errore meteo:', e);
-            document.getElementById('meteo-citta').textContent = 'Meteo non disponibile';
+        // Funzioni JavaScript (Meteo, Video, Notizie, Fullscreen)
+        async function caricaMeteo() {
+            try {
+                const r = await fetch('/api/meteo'); 
+                const d = await r.json();
+                document.getElementById('meteo-citta').textContent = 'Ancona';
+                document.getElementById('meteo-temp').textContent = Math.round(d.temperature_2m) + '°C';
+                document.getElementById('meteo-vento').textContent = 'Vento: ' + Math.round(d.windspeed_10m) + ' km/h';
+                document.getElementById('meteo-umidita').textContent = 'Umidità: ' + d.relativehumidity_2m + '%';
+                document.getElementById('meteo-pressione').textContent = 'Pressione: ' + Math.round(d.surface_pressure) + ' hPa';
+            } catch(e) { console.error(e); }
         }
-    }
 
-    // VIDEO
-    let playlist = [];
-    let indiceCorrente = 0;
+        let playlist = [];
+        let indiceCorrente = 0;
+        async function caricaVideo() {
+            try {
+                const r = await fetch('/api/video');
+                playlist = await r.json();
+                if (playlist.length > 0) cambiaVideo(playlist[0].url);
+            } catch(e) { console.error(e); }
+        }
+        function cambiaVideo(url) {
+            const player = document.getElementById('video-player');
+            player.src = url.replace(/\\\//g, '/');
+            player.play();
+        }
+        document.getElementById('video-player').addEventListener('ended', () => {
+            indiceCorrente = (indiceCorrente + 1) % playlist.length;
+            if (playlist[indiceCorrente]) cambiaVideo(playlist[indiceCorrente].url);
+        });
 
-    async function caricaVideo() {
-        try {
-            const r = await fetch('/api/video');
-            playlist = await r.json();
-            
-            if (playlist.length > 0) {
-                cambiaVideo(playlist[0].url);
+        async function caricaNotizie() {
+            try {
+                const r = await fetch('/api/notizie');
+                const notizie = await r.json();
+                if (!notizie.length) return;
+                const testo = notizie.join('    ●    ');
+                document.getElementById('notizie-inner').textContent = testo + '    ●    ' + testo;
+            } catch(e) { document.getElementById('notizie-inner').textContent = 'Notizie non disponibili'; }
+        }
+
+        caricaMeteo(); caricaVideo(); caricaNotizie();
+        setInterval(caricaMeteo, 600000);
+        setInterval(caricaNotizie, 300000);
+
+        let timerBottone;
+        document.addEventListener('mousemove', () => {
+            const btn = document.getElementById('btn-fs');
+            btn.style.opacity = '1';
+            clearTimeout(timerBottone);
+            timerBottone = setTimeout(() => btn.style.opacity = '0', 2000);
+        });
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+                document.getElementById('btn-fs').textContent = '✕ Esci';
+            } else {
+                document.exitFullscreen();
+                document.getElementById('btn-fs').textContent = '⛶ Schermo intero';
             }
-        } catch(e) { console.error('Errore video:', e); }
-    }
-
-    function cambiaVideo(url) {
-        const player = document.getElementById('video-player');
-        player.src = url.replace(/\\\//g, '/');
-        player.play();
-    }
-
-    document.getElementById('video-player').addEventListener('ended', () => {
-        indiceCorrente = (indiceCorrente + 1) % playlist.length;
-        if (playlist[indiceCorrente]) {
-            cambiaVideo(playlist[indiceCorrente].url);
         }
-    });
-
-    // NOTIZIE scorrimento verticale
-    async function caricaNotizie() {
-        try {
-            const r = await fetch('/api/notizie');
-            const notizie = await r.json();
-            if (!notizie.length) return;
-
-            // Duplica per loop continuo
-            const tutte = [...notizie, ...notizie];
-            const testo = notizie.join('    ●    ');
-            document.getElementById('notizie-inner').textContent = testo + '    ●    ' + testo + '    ●    ' + testo + '    ●    ' + testo;
-        } catch(e) {
-            document.getElementById('notizie-inner').innerHTML = '<div class="notizia">Notizie non disponibili</div>';
-        }
-    }
-
-    caricaMeteo();
-    caricaVideo();
-    caricaNotizie();
-    setInterval(caricaMeteo, 600000);
-    setInterval(caricaNotizie, 300000);
-
-
-    // Bottone a scomparsa
-    let timerBottone;
-    document.addEventListener('mousemove', () => {
-        const btn = document.getElementById('btn-fs');
-        btn.style.opacity = '1';
-        clearTimeout(timerBottone);
-        timerBottone = setTimeout(() => {
-            btn.style.opacity = '0';
-        }, 2000);
-    });
-
-    function toggleFullscreen() {
-        if (!document.fullscreenElement) {
-            document.documentElement.requestFullscreen();
-            document.getElementById('btn-fs').textContent = '✕ Esci';
-        } else {
-            document.exitFullscreen();
-            document.getElementById('btn-fs').textContent = '⛶ Schermo intero';
-        }
-    }
-
     </script>
 </body>
 </html>
