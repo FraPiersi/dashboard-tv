@@ -35,6 +35,12 @@
             justify-content: center;
         }
 
+        .logo-vvf {
+            height: 70px;    /* Regola questa altezza in base a quanto vuoi grandi i loghi */
+            width: auto;     /* Mantiene le proporzioni */
+            padding: 5px;    /* Un po' di respiro intorno al logo */
+        }
+
         /* --- 2. METEO (Sinistra) --- */
         #meteo-box {
             grid-column: 1;     /* Prima colonna */
@@ -86,7 +92,7 @@
             height: 100%;
             display: flex;
             align-items: center;
-            font-size: 14px;
+            font-size: 20px;
             font-weight: 700;
             white-space: nowrap;
             flex-shrink: 0;
@@ -136,9 +142,13 @@
 <body>
 
     <div id="header-banner">
-        <span style="font-size: 40px; font-weight: 700; color: #f20505; letter-spacing: 2px;">
+        <img src="{{ asset('images/logo-vvf.png') }}" class="logo-vvf">
+
+        <span style="font-size: 40px; font-weight: 700; color: #f20505; letter-spacing: 2px; margin: 0 80px;">
             DIREZIONE REGIONALE VIGILI DEL FUOCO MARCHE
         </span>
+
+        <img src="{{ asset('images/logo-vvf.png') }}" class="logo-vvf">
     </div>
     
     <button onclick="toggleFullscreen()" id="btn-fs">⛶ Schermo intero</button>
