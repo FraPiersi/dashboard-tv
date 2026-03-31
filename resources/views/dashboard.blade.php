@@ -67,7 +67,7 @@
             gap: 10px;
             min-height: 0; /* Importante per non far "esplodere" il box */
         }
-        #meteo-box .citta { font-size: 22px; font-weight: 500; color: #fff; }
+        #meteo-box .citta { font-size: 30px; font-weight: 500; color: #fff; }
         #meteo-box .temp  { font-size: 90px; font-weight: 200; line-height: 1; }
         #meteo-box .desc  { font-size: 16px; color: #aaa; }
 
