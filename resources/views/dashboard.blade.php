@@ -126,6 +126,11 @@
             transition: 0.3s;
         }
         #btn-fs:hover { opacity: 1; background: #eee; color: #000; }
+
+        /* Classe per nascondere il mouse */
+        .hide-cursor {
+            cursor: none !important;
+        }
     </style>
 </head>
 <body>
@@ -236,6 +241,23 @@
                 document.getElementById('btn-fs').textContent = '⛶ Schermo intero';
             }
         }
+
+
+        let mouseTimer;
+
+        document.addEventListener('mousemove', () => {
+            // 1. Mostra il mouse (rimuove la classe)
+            document.body.classList.remove('hide-cursor');
+    
+            // 2. Cancella il vecchio timer
+            clearTimeout(mouseTimer);
+    
+            // 3. Fai partire un nuovo timer di 3 secondi (3000ms)
+            mouseTimer = setTimeout(() => {
+                document.body.classList.add('hide-cursor');
+            }, 3000); 
+        });
+        
     </script>
 </body>
 </html>
