@@ -103,7 +103,7 @@
             white-space: nowrap;
             font-size: 36px; /* Dimensione ideale per TV */
             color: #ccc;
-            animation: scroll-left 1000s linear infinite;
+            animation: scroll-left 900s linear infinite;
         }
         @keyframes scroll-left {
             0%   { transform: translateX(0%); }
@@ -167,14 +167,24 @@
         // Funzioni JavaScript (Meteo, Video, Notizie, Fullscreen)
         async function caricaMeteo() {
             try {
-                const r = await fetch('/api/meteo'); 
+                // Proviamo a chiamare DIRETTAMENTE Open-Meteo dal browser, senza passare per Laravel
+                const lat = 43.61;
+                const lon = 13.51;
+                const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,windspeed_10m,relativehumidity_2m,surface_pressure&wind_speed_unit=kmh`;
+        
+                const r = await fetch(url); 
                 const d = await r.json();
+
                 document.getElementById('meteo-citta').textContent = 'Ancona';
-                document.getElementById('meteo-temp').textContent = Math.round(d.temperature_2m) + '°C';
-                document.getElementById('meteo-vento').textContent = 'Vento: ' + Math.round(d.windspeed_10m) + ' km/h';
-                document.getElementById('meteo-umidita').textContent = 'Umidità: ' + d.relativehumidity_2m + '%';
-                document.getElementById('meteo-pressione').textContent = 'Pressione: ' + Math.round(d.surface_pressure) + ' hPa';
-            } catch(e) { console.error(e); }
+                document.getElementById('meteo-temp').textContent = Math.round(d.current.temperature_2m) + '°C';
+                document.getElementById('meteo-vento').textContent = 'Vento: ' + Math.round(d.current.windspeed_10m) + ' km/h';
+                document.getElementById('meteo-umidita').textContent = 'Umidità: ' + d.current.relativehumidity_2m + '%';
+                document.getElementById('meteo-pressione').textContent = 'Pressione: ' + Math.round(d.current.surface_pressure) + ' hPa';
+        
+            } catch(e) {
+                console.error('Il browser non riesce a scaricare il meteo:', e);
+                // Se fallisce, forse serve davvero il proxy o Laravel
+            }
         }
 
         let playlist = [];
