@@ -30,7 +30,7 @@ class DashboardController extends Controller
                 'current'         => 'temperature_2m,windspeed_10m,relativehumidity_2m,surface_pressure,weathercode',
                 'wind_speed_unit' => 'kmh',
             ]);
-            
+
             return $resp->json();
         });
 
@@ -39,29 +39,63 @@ class DashboardController extends Controller
 
     public function notizie()
     {
-        $notizie = Cache::remember('notizie', 300, function () {
-            $xml = simplexml_load_file('https://www.cronacheancona.it/feed/');
-            $items = [];
-            foreach ($xml->channel->item as $item) {
-                $items[] = (string) $item->title;
-                if (count($items) >= 15) break;
+        $proxy = env('HTTP_PROXY');
+
+        // Cambiamo la chiave della cache per non mischiare le notizie vecchie con le nuove
+        $notizie = Cache::remember('notizie_marche', 3600, function () use ($proxy) {
+            $client = Http::asJson();
+
+            if ($proxy) {
+                $client->withOptions([
+                    'proxy' => $proxy,
+                    'verify' => false, 
+                ]);
             }
-            return $items;
+
+            // URL SPECIFICO PER LE MARCHE
+            $response = $client->get('https://www.ansa.it/marche/notizie/marche_rss.xml');
+
+            if ($response->failed()) {
+                return ["Nessun aggiornamento disponibile al momento"];
+            }
+
+            // Estraiamo i titoli dall'XML di ANSA
+            return $this->estraiTitoliDaAnsa($response->body());
         });
 
         return response()->json($notizie);
     }
 
+
+    private function estraiTitoliDaAnsa($xmlString)
+    {
+        try {
+            $xml = simplexml_load_string($xmlString);
+            $titoli = [];
+
+            // ANSA mette le notizie dentro il tag <item>
+            foreach ($xml->channel->item as $item) {
+                // Prendiamo il titolo e aggiungiamo un pallino alla fine per separarli bene
+                $titoli[] = (string) $item->title;
+            }
+
+            return $titoli;
+        } catch (\Exception $e) {
+            return ["Errore nel caricamento delle notizie locali"];
+        }
+    }
+
+
     public function video()
-{
-    $path = public_path('videos');
-    $files = glob($path . '/*.{mp4,MP4,webm,WEBM,mkv,MKV}', GLOB_BRACE);
+    {
+        $path = public_path('videos');
+        $files = glob($path . '/*.{mp4,MP4,webm,WEBM,mkv,MKV}', GLOB_BRACE);
 
-    $videos = array_map(fn($f) => [
-        'name' => basename($f),
-        'url'  => url('videos/' . basename($f)),
-    ], $files ?: []);
+        $videos = array_map(fn($f) => [
+            'name' => basename($f),
+            'url'  => url('videos/' . basename($f)),
+        ], $files ?: []);
 
-    return response()->json($videos);
-}
+        return response()->json($videos);
+    }
 }
