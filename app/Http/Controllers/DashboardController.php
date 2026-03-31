@@ -13,13 +13,24 @@ class DashboardController extends Controller
 
     public function meteo()
     {
-        $data = Cache::remember('meteo', 600, function () {
-            $resp = Http::get('https://api.open-meteo.com/v1/forecast', [
+        $proxy = env('HTTP_PROXY');
+        $data = Cache::remember('meteo', 600, function () use ($proxy) {
+            
+            $request = Http::asJson();
+
+            // Se nel .env c'è un proxy, lo usiamo. Altrimenti no.
+            if ($proxy) {
+                $request->withOptions(['proxy' => $proxy]);
+            }
+            
+
+            $resp = $request ->get('https://api.open-meteo.com/v1/forecast', [
                 'latitude'        => 43.61,
                 'longitude'       => 13.51,
                 'current'         => 'temperature_2m,windspeed_10m,relativehumidity_2m,surface_pressure,weathercode',
                 'wind_speed_unit' => 'kmh',
             ]);
+            
             return $resp->json();
         });
 
