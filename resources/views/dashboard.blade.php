@@ -151,7 +151,7 @@
     </div>
 
     <div id="player-box">
-        <video id="video-player" controls autoplay muted>
+        <video id="video-player" autoplay muted playsinline>
             Il tuo browser non supporta il video.
         </video>
     </div>
