@@ -13,28 +13,9 @@ class DashboardController extends Controller
 
     public function meteo()
     {
-        $proxy = env('HTTP_PROXY');
-        $data = Cache::remember('meteo', 600, function () use ($proxy) {
-            
-            $request = Http::asJson();
-
-            // Se nel .env c'è un proxy, lo usiamo. Altrimenti no.
-            if ($proxy) {
-                $request->withOptions(['proxy' => $proxy]);
-            }
-            
-
-            $resp = $request ->get('https://api.open-meteo.com/v1/forecast', [
-                'latitude'        => 43.61,
-                'longitude'       => 13.51,
-                'current'         => 'temperature_2m,windspeed_10m,relativehumidity_2m,surface_pressure,weathercode',
-                'wind_speed_unit' => 'kmh',
-            ]);
-
-            return $resp->json();
-        });
-
-        return response()->json($data['current'] ?? []);
+        // NON facciamo più Http::get da qui.
+        // Restituiamo un array vuoto o un messaggio.
+        return response()->json(['status' => 'usa_meteo_client_side']);
     }
 
     public function notizie()
@@ -50,8 +31,17 @@ class DashboardController extends Controller
                     'proxy' => $proxy,
                     'verify' => false, 
                 ]);
+
+                if ($needsAuth) {
+                    $user = env('PROXY_USER');
+                    $pass = env('PROXY_PASS');
+                    $request->withBasicAuth($user, $pass); // Laravel "parla" con il proxy per te
+                }
+
+                $request->withOptions($options);
             }
 
+        
             // URL SPECIFICO PER LE MARCHE
             $response = $client->get('https://www.ansa.it/marche/notizie/marche_rss.xml');
 
