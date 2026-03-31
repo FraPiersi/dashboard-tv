@@ -16,12 +16,12 @@
             width: 100vw;
             display: grid;
             padding: 12px;
-            gap: 12px;
+            gap: 15px;
             overflow: hidden; /* Impedisce la comparsa di barre di scorrimento */
 
             /* DEFINIZIONE GRIGLIA */
             grid-template-columns: 420px 1fr; /* Colonna Meteo e Colonna Video */
-            grid-template-rows: 60px 1fr 80px; /* Altezza fissa sopra e sotto, flessibile al centro */
+            grid-template-rows: auto 1fr auto; /* Altezza fissa sopra e sotto, flessibile al centro */
         }
 
         /* --- 1. TESTATA (Sempre in alto, occupa tutto) --- */
@@ -33,12 +33,24 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            
+
+            height: 70px;            /* Altezza uguale alla barra notizie */
+                /* Spazio sotto la barra */
+             /* Un po' di ombra per farla risaltare */
         }
 
         .logo-vvf {
-            height: 70px;    /* Regola questa altezza in base a quanto vuoi grandi i loghi */
+            height: 75px;    /* Regola questa altezza in base a quanto vuoi grandi i loghi */
             width: auto;     /* Mantiene le proporzioni */
             padding: 5px;    /* Un po' di respiro intorno al logo */
+            /*margin-left: 15px; */
+            /*margin-right: 15px; */
+        }
+
+        #header-banner span {
+            font-size: 45px !important; /* Leggermente più grande per bilanciare la barra */
+            line-height: 90px;          /* Centra perfettamente il testo nel fusto della barra */
         }
 
         /* --- 2. METEO (Sinistra) --- */
@@ -84,6 +96,7 @@
             display: flex;
             align-items: center;
             overflow: hidden;
+            height: 65px;
         }
 
         #notizie-header {
@@ -144,7 +157,7 @@
     <div id="header-banner">
         <img src="{{ asset('images/logo-vvf.png') }}" class="logo-vvf">
 
-        <span style="font-size: 40px; font-weight: 700; color: #f20505; letter-spacing: 2px; margin: 0 80px;">
+        <span style="font-size: 40px; font-weight: 700; color: #f20505; letter-spacing: 2px; margin: 0 100px;">
             DIREZIONE REGIONALE VIGILI DEL FUOCO MARCHE
         </span>
 
