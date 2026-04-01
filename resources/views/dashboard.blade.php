@@ -150,6 +150,20 @@
         .hide-cursor {
             cursor: none !important;
         }
+
+        .ansa-label {
+            font-size: 25px;
+            font-weight: bold;
+            color:#e24b4a;
+            margin: 0 2px;
+    
+            /* AGGIUNGI QUESTE DUE RIGHE */
+            position: relative; 
+            top: -4px; /* Valore negativo per spostarlo verso l'alto. Prova -2px o -6px se serve */
+    
+            vertical-align: middle;
+        }
+
     </style>
 </head>
 <body>
@@ -157,7 +171,7 @@
     <div id="header-banner">
         <img src="{{ asset('images/logo-vvf.png') }}" class="logo-vvf">
 
-        <span style="font-size: 40px; font-weight: 700; color: #f20505; letter-spacing: 2px; margin: 0 100px;">
+        <span style="font-size: 40px; font-weight: 700; color: #f20505; letter-spacing: 2px; margin: 0 30px;">
             DIREZIONE REGIONALE VIGILI DEL FUOCO MARCHE
         </span>
 
@@ -167,15 +181,28 @@
     <button onclick="toggleFullscreen()" id="btn-fs">⛶ Schermo intero</button>
 
     <div id="meteo-box">
-        <div class="citta" id="meteo-citta">Ancona</div>
-        <div class="temp" id="meteo-temp">--°</div>
-        <div class="desc" id="meteo-vento">Vento: --</div>
-        <div class="desc" id="meteo-umidita">Umidità: --</div>
-        <div class="desc" id="meteo-pressione">Pressione: --</div>
+    
+    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
         
+            <div style="text-align: left;">
+                <div class="citta" id="meteo-citta">Ancona</div>
+                <div class="temp" id="meteo-temp">--°</div>
+                <div class="desc" id="meteo-vento">Vento: --</div>
+                <div class="desc" id="meteo-umidita">Umidità: --</div>
+                <div class="desc" id="meteo-pressione">Pressione: --</div>
+            </div>
+
+            <div style="text-align: center;">
+                <div id="digital-clock" style="font-size: 50px; font-weight: 800; color:rgb(255, 255, 255); font-family: monospace; line-height: 1;">00:00</div>
+                <div id="digital-date" style="font-size: 14px; color: #aaa; text-transform: uppercase; margin-top: 5px;">Caricamento...</div>
+            </div>
+
+        </div>
+
         <div style="width: 100%; flex: 1; margin-top: 15px; border-radius: 12px; overflow: hidden; border: 1px solid #333;">
             <iframe width="100%" height="100%" src="https://embed.windy.com/embed2.html?lat=43.61&lon=13.51&zoom=7&level=surface&overlay=clouds&product=ecmwf&metricWind=km%2Fh&metricTemp=%C2%B0C" frameborder="0"></iframe>
         </div>
+
     </div>
 
     <div id="player-box">
@@ -239,8 +266,10 @@
                 const r = await fetch('/api/notizie');
                 const notizie = await r.json();
                 if (!notizie.length) return;
-                const testo = notizie.join('    ●    ');
-                document.getElementById('notizie-inner').textContent = testo + '    ●    ' + testo;
+                const separatore = ' <span class="ansa-label">~ANSA~</span> ';
+                const testo = notizie.join(separatore);
+                // Usiamo .innerHTML invece di .textContent per attivare i tag span
+                document.getElementById('notizie-inner').innerHTML = testo + separatore + testo;
             } catch(e) { document.getElementById('notizie-inner').textContent = 'Notizie non disponibili'; }
         }
 
@@ -269,17 +298,42 @@
         let mouseTimer;
 
         document.addEventListener('mousemove', () => {
-            // 1. Mostra il mouse (rimuove la classe)
-            document.body.classList.remove('hide-cursor');
-    
+            const video = document.getElementById('video-player');
+            const btn = document.getElementById('btn-fs');
+
+            // 1. Mostra tutto quando il mouse si muove
+            document.body.classList.remove('hide-cursor'); // Mostra cursore
+            btn.style.opacity = '1';                       // Mostra tasto FS
+            video.setAttribute('controls', 'true');        // Mostra barra volume/player
+
             // 2. Cancella il vecchio timer
             clearTimeout(mouseTimer);
-    
-            // 3. Fai partire un nuovo timer di 3 secondi (3000ms)
+
+            // 3. Nascondi tutto dopo 3 secondi di inattività
             mouseTimer = setTimeout(() => {
-                document.body.classList.add('hide-cursor');
+                document.body.classList.add('hide-cursor'); // Nasconde cursore
+                btn.style.opacity = '0';                    // Nasconde tasto FS
+                video.removeAttribute('controls');          // Nasconde barra volume/player
             }, 3000); 
         });
+
+        function updateClock() {
+            const ora = new Date();
+    
+            // Formato Ora 00:00:00
+            const opzioniOra = { hour: '2-digit', minute: '2-digit', hour12: false };
+            document.getElementById('digital-clock').textContent = ora.toLocaleTimeString('it-IT', opzioniOra);
+    
+            // Formato Data: Mercoledì, 1 Aprile
+            const opzioniData = { weekday: 'long', day: 'numeric', month: 'long' };
+            document.getElementById('digital-date').textContent = ora.toLocaleDateString('it-IT', opzioniData);
+        }
+
+        // Avvia l'orologio e aggiornalo ogni secondo
+        setInterval(updateClock, 1000);
+        updateClock();
+
+
         
     </script>
 </body>
