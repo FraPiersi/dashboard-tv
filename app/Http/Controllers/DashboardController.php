@@ -22,35 +22,30 @@ class DashboardController extends Controller
     {
         $proxy = env('HTTP_PROXY');
 
-        // Cambiamo la chiave della cache per non mischiare le notizie vecchie con le nuove
-        $notizie = Cache::remember('notizie_marche', 3600, function () use ($proxy) {
-            $client = Http::asJson();
+        // Usiamo una chiave cache fresca per i test
+        $notizie = Cache::remember('notizie_ansa_vf', 60, function () use ($proxy) {
+        
+            $connessione = Http::timeout(15); // Diamo tempo al proxy di rispondere
 
             if ($proxy) {
-                $client->withOptions([
-                    'proxy' => $proxy,
-                    'verify' => false, 
+                $connessione = $connessione->withOptions([
+                    'proxy'  => $proxy,
+                    'verify' => false, // Salta il controllo certificati del proxy ministeriale
                 ]);
+            }
 
-                if ($needsAuth) {
-                    $user = env('PROXY_USER');
-                    $pass = env('PROXY_PASS');
-                    $request->withBasicAuth($user, $pass); // Laravel "parla" con il proxy per te
+            try {
+                $response = $connessione->get('https://www.ansa.it/marche/notizie/marche_rss.xml');
+
+                if ($response->successful()) {
+                    return $this->estraiTitoliDaAnsa($response->body());
                 }
+            
+                return ["Errore ANSA: " . $response->status()];
 
-                $request->withOptions($options);
+            } catch (\Exception $e) {
+                return ["Errore di connessione al proxy: " . $e->getMessage()];
             }
-
-        
-            // URL SPECIFICO PER LE MARCHE
-            $response = $client->get('https://www.ansa.it/marche/notizie/marche_rss.xml');
-
-            if ($response->failed()) {
-                return ["Nessun aggiornamento disponibile al momento"];
-            }
-
-            // Estraiamo i titoli dall'XML di ANSA
-            return $this->estraiTitoliDaAnsa($response->body());
         });
 
         return response()->json($notizie);
