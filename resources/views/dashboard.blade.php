@@ -32,7 +32,8 @@
             border-radius: 12px;
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: space-between;
+            padding: 0 15px;
             
 
             height: 70px;            /* Altezza uguale alla barra notizie */
@@ -171,7 +172,7 @@
     <div id="header-banner">
         <img src="{{ asset('images/logo-vvf.png') }}" class="logo-vvf">
 
-        <span style="font-size: 40px; font-weight: 700; color: #f20505; letter-spacing: 2px; margin: 0 50px;">
+        <span style="font-size: 40px; font-weight: 700; color: #f20505; letter-spacing: 2px;">
             DIREZIONE REGIONALE VIGILI DEL FUOCO MARCHE
         </span>
 
