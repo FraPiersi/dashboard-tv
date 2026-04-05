@@ -123,7 +123,7 @@
             white-space: nowrap;
             font-size: 36px; /* Dimensione ideale per TV */
             color: #ccc;
-            animation: scroll-left 900s linear infinite;
+            animation: scroll-left 450s linear infinite;
         }
         @keyframes scroll-left {
             0%   { transform: translateX(0%); }
@@ -270,7 +270,7 @@
                 const separatore = ' <span class="ansa-label">~ANSA~</span> ';
                 const testo = notizie.join(separatore);
                 // Usiamo .innerHTML invece di .textContent per attivare i tag span
-                document.getElementById('notizie-inner').innerHTML = testo + separatore + testo;
+                document.getElementById('notizie-inner').innerHTML = testo + separatore + testo + separatore + testo;
             } catch(e) { document.getElementById('notizie-inner').textContent = 'Notizie non disponibili'; }
         }
 
