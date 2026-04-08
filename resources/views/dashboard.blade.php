@@ -123,7 +123,7 @@
             white-space: nowrap;
             font-size: 36px; /* Dimensione ideale per TV */
             color: #ccc;
-            animation: scroll-left 450s linear infinite;
+            animation: scroll-left 1400s linear infinite;
         }
         @keyframes scroll-left {
             0%   { transform: translateX(0%); }
